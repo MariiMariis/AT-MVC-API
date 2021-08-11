@@ -10,9 +10,12 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Presentation.Data;
+using Crosscutting.IoC;
 
 namespace Presentation
 {
+    using Crosscutting.IoC;
+
     public class Startup
     {
         public Startup(IConfiguration configuration)
@@ -27,8 +30,7 @@ namespace Presentation
         {
             services.AddControllersWithViews();
 
-            services.AddDbContext<FabricantesContext>(options =>
-                    options.UseSqlServer(Configuration.GetConnectionString("FabricantesContext")));
+            services.RegisterServices(Configuration);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
