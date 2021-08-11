@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Domain.Model.Models;
 
-namespace Presentation.Data
+namespace Data.Data
 {
     public class FabricantesContext : DbContext
     {

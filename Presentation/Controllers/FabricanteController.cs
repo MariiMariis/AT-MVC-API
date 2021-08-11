@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Domain.Model.Models;
-using Presentation.Data;
+using Data.Data;
 
 namespace Presentation.Controllers
 {
