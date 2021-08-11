@@ -1,4 +1,4 @@
-#Intallar ef migrations
+#Installar ef migrations
 
 dotnet tool install --global dotnet-ef --version 5.0.9
 
