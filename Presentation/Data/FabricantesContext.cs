@@ -14,6 +14,6 @@ namespace Presentation.Data
         {
         }
 
-        public DbSet<Domain.Model.Models.FabricanteModel> FabricanteModel { get; set; }
+        public DbSet<Domain.Model.Models.FabricanteModel> Fabricantes { get; set; }
     }
 }

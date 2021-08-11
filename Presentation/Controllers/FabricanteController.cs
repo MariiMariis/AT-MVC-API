@@ -22,7 +22,7 @@ namespace Presentation.Controllers
         // GET: Fabricante
         public async Task<IActionResult> Index()
         {
-            return View(await _context.FabricanteModel.ToListAsync());
+            return View(await _context.Fabricantes.ToListAsync());
         }
 
         // GET: Fabricante/Details/5
@@ -33,7 +33,7 @@ namespace Presentation.Controllers
                 return NotFound();
             }
 
-            var fabricanteModel = await _context.FabricanteModel
+            var fabricanteModel = await _context.Fabricantes
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (fabricanteModel == null)
             {
@@ -73,7 +73,7 @@ namespace Presentation.Controllers
                 return NotFound();
             }
 
-            var fabricanteModel = await _context.FabricanteModel.FindAsync(id);
+            var fabricanteModel = await _context.Fabricantes.FindAsync(id);
             if (fabricanteModel == null)
             {
                 return NotFound();
@@ -124,7 +124,7 @@ namespace Presentation.Controllers
                 return NotFound();
             }
 
-            var fabricanteModel = await _context.FabricanteModel
+            var fabricanteModel = await _context.Fabricantes
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (fabricanteModel == null)
             {
@@ -139,15 +139,15 @@ namespace Presentation.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var fabricanteModel = await _context.FabricanteModel.FindAsync(id);
-            _context.FabricanteModel.Remove(fabricanteModel);
+            var fabricanteModel = await _context.Fabricantes.FindAsync(id);
+            _context.Fabricantes.Remove(fabricanteModel);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
         private bool FabricanteModelExists(int id)
         {
-            return _context.FabricanteModel.Any(e => e.Id == id);
+            return _context.Fabricantes.Any(e => e.Id == id);
         }
     }
 }
