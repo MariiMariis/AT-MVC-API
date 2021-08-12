@@ -15,5 +15,6 @@ namespace Data.Data
         }
 
         public DbSet<Domain.Model.Models.FabricanteModel> Fabricantes { get; set; }
+        public DbSet<Domain.Model.Models.ProcessadorModel> Processadores { get; set; }
     }
 }

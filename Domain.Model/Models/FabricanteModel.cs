@@ -17,5 +17,7 @@ namespace Domain.Model.Models
         public string PaisOrigem { get; set; }
 
         public DateTime DataFundacao { get; set; }
+
+        public List<ProcessadorModel> Processadores { get; set; }
     }
 }
