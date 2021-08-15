@@ -22,6 +22,7 @@ namespace Domain.Model.Models
 
         public DateTime LaunchDate { get; set; }
 
+
         public int FabricanteId { get; set; }
 
         public FabricanteModel NomeFabricante { get; set; }
