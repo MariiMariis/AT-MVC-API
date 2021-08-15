@@ -33,8 +33,10 @@ namespace Presentation.Controllers
                 return NotFound();
             }
 
-            var fabricanteModel = await _context.Fabricantes
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var fabricanteModel = await _context
+                                      .Fabricantes
+                                      .Include(x => x.Processadores)
+                                      .FirstOrDefaultAsync(m => m.Id == id);
             if (fabricanteModel == null)
             {
                 return NotFound();
