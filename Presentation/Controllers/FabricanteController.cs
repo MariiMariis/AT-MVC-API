@@ -39,11 +39,8 @@ namespace Presentation.Controllers
                 return NotFound();
             }
 
-            var fabricanteModel = await _context
-                                      .Fabricantes
-                                      .Include(x => x.Processadores)
-                                      .OrderBy(x => x.NomeFabricante)
-                                      .FirstOrDefaultAsync(m => m.Id == id);
+            var fabricanteModel = await _fabricanteService.GetByIdAsync(id.Value);
+
             if (fabricanteModel == null)
             {
                 return NotFound();
@@ -65,13 +62,13 @@ namespace Presentation.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,NomeFabricante,Fundador,PaisOrigem,DataFundacao")] FabricanteModel fabricanteModel)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                _context.Add(fabricanteModel);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                return View(fabricanteModel);
             }
-            return View(fabricanteModel);
+
+            var fabricanteCreated = await _fabricanteService.CreateAsync(fabricanteModel);
+            return RedirectToAction(nameof(Details), new { id = fabricanteCreated.Id});
         }
 
         // GET: Fabricante/Edit/5
@@ -82,7 +79,7 @@ namespace Presentation.Controllers
                 return NotFound();
             }
 
-            var fabricanteModel = await _context.Fabricantes.FindAsync(id);
+            var fabricanteModel = await _fabricanteService.GetByIdAsync(id.Value);
             if (fabricanteModel == null)
             {
                 return NotFound();
@@ -106,12 +103,12 @@ namespace Presentation.Controllers
             {
                 try
                 {
-                    _context.Update(fabricanteModel);
-                    await _context.SaveChangesAsync();
+                    await _fabricanteService.EditAsync(fabricanteModel);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!FabricanteModelExists(fabricanteModel.Id))
+                    var exists = await FabricanteModelExistsAsync(fabricanteModel.Id);
+                    if (!exists)
                     {
                         return NotFound();
                     }
@@ -133,8 +130,7 @@ namespace Presentation.Controllers
                 return NotFound();
             }
 
-            var fabricanteModel = await _context.Fabricantes
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var fabricanteModel = await _fabricanteService.GetByIdAsync(id.Value);
             if (fabricanteModel == null)
             {
                 return NotFound();
@@ -147,16 +143,19 @@ namespace Presentation.Controllers
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            var fabricanteModel = await _context.Fabricantes.FindAsync(id);
-            _context.Fabricantes.Remove(fabricanteModel);
-            await _context.SaveChangesAsync();
+        { 
+            await _fabricanteService.DeleteAsync(id);
+
             return RedirectToAction(nameof(Index));
         }
 
-        private bool FabricanteModelExists(int id)
+        private async Task<bool> FabricanteModelExistsAsync(int id)
         {
-            return _context.Fabricantes.Any(e => e.Id == id);
+            var fabricante = await _fabricanteService.GetByIdAsync(id);
+
+            var any = fabricante != null;
+
+            return any;
         }
     }
 }

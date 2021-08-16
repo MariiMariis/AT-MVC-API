@@ -23,34 +23,56 @@ namespace Data.Repositories
 
         public async Task<IEnumerable<FabricanteModel>> GetAllAsync(bool orderAscendant, string search = null)
         {
+            var fabricantes = orderAscendant
+                                  ? _fabricantesContext.Fabricantes.OrderBy(x => x.NomeFabricante)
+                                  : _fabricantesContext.Fabricantes.OrderByDescending(x => x.NomeFabricante);
+
             if (string.IsNullOrWhiteSpace(search))
             {
-                return await _fabricantesContext.Fabricantes.ToListAsync();
+                return await fabricantes.ToListAsync();
             }
-            return await _fabricantesContext
-                       .Fabricantes
+
+            return await fabricantes
                        .Where(x => x.NomeFabricante.Contains(search))
                        .ToListAsync();
         }
 
         public async Task<FabricanteModel> GetByIdAsync(int id)
         {
-            throw new NotImplementedException();
+            var fabricante =  await _fabricantesContext
+                .Fabricantes
+                .Include(x => x.Processadores)
+                .FirstOrDefaultAsync(x => x.Id == id);
+
+            return fabricante;
         }
 
         public async Task<FabricanteModel> CreateAsync(FabricanteModel fabricanteModel)
         {
-            throw new NotImplementedException();
+            var fabricante = _fabricantesContext.Fabricantes.Add(fabricanteModel);
+
+             await _fabricantesContext.SaveChangesAsync();
+
+             return fabricante.Entity;
+
         }
 
         public async Task<FabricanteModel> EditAsync(FabricanteModel fabricanteModel)
         {
-            throw new NotImplementedException();
+            var fabricante = _fabricantesContext.Fabricantes.Update(fabricanteModel);
+
+            await _fabricantesContext.SaveChangesAsync();
+
+            return fabricante.Entity;
         }
 
         public async Task DeleteAsync(int id)
         {
-            throw new NotImplementedException();
+            var fabricante = await GetByIdAsync(id);
+
+            _fabricantesContext.Fabricantes.Remove(fabricante);
+
+            await _fabricantesContext.SaveChangesAsync();
         }
     }
 }
