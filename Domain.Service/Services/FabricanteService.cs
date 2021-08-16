@@ -4,36 +4,44 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Domain.Model.Interfaces.Services;
+using Domain.Model.Interfaces.Repositories;
+using Domain.Model.Models;
 
 namespace Domain.Service.Services
 {
-    using Domain.Model.Models;
-
     public class FabricanteService : IFabricanteService
     {
-        public Task<IEnumerable<FabricanteModel>> GetAll(bool orderAscendant, string search = null)
-        {
-            throw new NotImplementedException();
+        private readonly IFabricanteRepository _fabricanteRepository;
+
+        public FabricanteService(
+            IFabricanteRepository fabricanteRepository)
+        { 
+            _fabricanteRepository = fabricanteRepository;
         }
 
-        public Task<FabricanteModel> GetById(int id)
+        public async Task<IEnumerable<FabricanteModel>> GetAllAsync(bool orderAscendant, string search = null)
         {
-            throw new NotImplementedException();
+            return await _fabricanteRepository.GetAllAsync(orderAscendant, search);
         }
 
-        public Task<FabricanteModel> Create(FabricanteModel fabricanteModel)
+        public async Task<FabricanteModel> GetByIdAsync(int id)
         {
-            throw new NotImplementedException();
+            return await _fabricanteRepository.GetByIdAsync(id);
         }
 
-        public Task<FabricanteModel> Edit(FabricanteModel fabricanteModel)
+        public async Task<FabricanteModel> CreateAsync(FabricanteModel fabricanteModel)
         {
-            throw new NotImplementedException();
+            return await _fabricanteRepository.CreateAsync(fabricanteModel);
         }
 
-        public Task Delete(int id)
+        public async Task<FabricanteModel> EditAsync(FabricanteModel fabricanteModel)
         {
-            throw new NotImplementedException();
+            return await _fabricanteRepository.EditAsync(fabricanteModel);
+        }
+
+        public async Task DeleteAsync(int id)
+        {
+            await _fabricanteRepository.DeleteAsync(id);
         }
     }
 }

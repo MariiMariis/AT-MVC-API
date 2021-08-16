@@ -7,22 +7,28 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Domain.Model.Models;
 using Data.Data;
+using Domain.Model.Interfaces.Services;
 
 namespace Presentation.Controllers
 {
     public class FabricanteController : Controller
     {
         private readonly FabricantesContext _context;
+        private readonly IFabricanteService _fabricanteService;
 
-        public FabricanteController(FabricantesContext context)
+        public FabricanteController(
+            FabricantesContext context,
+            IFabricanteService fabricanteService)
+
         {
             _context = context;
+            _fabricanteService = fabricanteService;
         }
 
         // GET: Fabricante
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Fabricantes.ToListAsync());
+            return View(await _fabricanteService.GetAllAsync(true));
         }
 
         // GET: Fabricante/Details/5
@@ -36,6 +42,7 @@ namespace Presentation.Controllers
             var fabricanteModel = await _context
                                       .Fabricantes
                                       .Include(x => x.Processadores)
+                                      .OrderBy(x => x.NomeFabricante)
                                       .FirstOrDefaultAsync(m => m.Id == id);
             if (fabricanteModel == null)
             {

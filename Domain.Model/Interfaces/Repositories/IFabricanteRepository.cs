@@ -11,14 +11,14 @@ namespace Domain.Model.Interfaces.Repositories
 
     public interface IFabricanteRepository
     {
-        Task<IEnumerable<FabricanteModel>> GetAll(
+        Task<IEnumerable<FabricanteModel>> GetAllAsync(
             bool orderAscendant,
             string search = null);
 
-        Task <FabricanteModel> GetById(int id);
-        Task <FabricanteModel> Create(FabricanteModel fabricanteModel);
-        Task <FabricanteModel> Edit(FabricanteModel fabricanteModel);
-        Task Delete(int id);
+        Task <FabricanteModel> GetByIdAsync(int id);
+        Task <FabricanteModel> CreateAsync(FabricanteModel fabricanteModel);
+        Task <FabricanteModel> EditAsync(FabricanteModel fabricanteModel);
+        Task DeleteAsync(int id);
 
 
     }
