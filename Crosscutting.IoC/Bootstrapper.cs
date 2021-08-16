@@ -12,6 +12,7 @@ using Domain.Service.Services;
 using Data.Repositories;
 using Domain.Model.Interfaces.Repositories;
 
+
 namespace Crosscutting.IoC
 {
    

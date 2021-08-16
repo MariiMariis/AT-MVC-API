@@ -29,7 +29,7 @@ namespace Data.Repositories
             }
             return await _fabricantesContext
                        .Fabricantes
-                       .Where(x => x.NomeFabricante.Contains( search))
+                       .Where(x => x.NomeFabricante.Contains(search))
                        .ToListAsync();
         }
 
