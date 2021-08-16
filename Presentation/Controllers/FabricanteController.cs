@@ -13,15 +13,12 @@ namespace Presentation.Controllers
 {
     public class FabricanteController : Controller
     {
-        private readonly FabricantesContext _context;
         private readonly IFabricanteService _fabricanteService;
 
         public FabricanteController(
-            FabricantesContext context,
             IFabricanteService fabricanteService)
 
         {
-            _context = context;
             _fabricanteService = fabricanteService;
         }
 

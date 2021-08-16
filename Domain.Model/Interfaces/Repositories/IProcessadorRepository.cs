@@ -7,15 +7,15 @@ using Domain.Model.Models;
 
 namespace Domain.Model.Interfaces.Repositories
 {
-    public interface IFabricanteRepository
+    public interface IProcessadorRepository
     {
-        Task<IEnumerable<FabricanteModel>> GetAllAsync(
+        Task<IEnumerable<ProcessadorModel>> GetAllAsync(
             bool orderAscendant,
             string search = null);
 
-        Task <FabricanteModel> GetByIdAsync(int id);
-        Task <FabricanteModel> CreateAsync(FabricanteModel fabricanteModel);
-        Task <FabricanteModel> EditAsync(FabricanteModel fabricanteModel);
+        Task<ProcessadorModel> GetByIdAsync(int id);
+        Task<ProcessadorModel> CreateAsync(ProcessadorModel processadorModel);
+        Task<ProcessadorModel> EditAsync(ProcessadorModel processadorModel);
         Task DeleteAsync(int id);
     }
 }

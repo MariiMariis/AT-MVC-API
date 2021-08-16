@@ -15,8 +15,6 @@ using Domain.Model.Interfaces.Repositories;
 
 namespace Crosscutting.IoC
 {
-   
-
     public static class Bootstrapper
     {
         public static void RegisterServices(
@@ -28,6 +26,9 @@ namespace Crosscutting.IoC
 
             services.AddTransient<IFabricanteService, FabricanteService>();
             services.AddTransient<IFabricanteRepository, FabricanteRepository>();
+
+            services.AddTransient<IProcessadorService, ProcessadorService>();
+            services.AddTransient<IProcessadorRepository, ProcessadorRepository>();
         }
 
     }

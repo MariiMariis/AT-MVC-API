@@ -10,7 +10,6 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Data.Repositories
 {
-
     public class FabricanteRepository : IFabricanteRepository
     {
         public readonly FabricantesContext _fabricantesContext;

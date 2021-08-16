@@ -1,0 +1,64 @@
+﻿@model Domain.Model.Models.ProcessadorModel
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<h1>Edit</h1>
+
+<h4>ProcessadorModel</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Id" />
+            <div class="form-group">
+                <label asp-for="NomeProcessador" class="control-label"></label>
+                <input asp-for="NomeProcessador" class="form-control" />
+                <span asp-validation-for="NomeProcessador" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ItemDescription" class="control-label"></label>
+                <input asp-for="ItemDescription" class="form-control" />
+                <span asp-validation-for="ItemDescription" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Cores" class="control-label"></label>
+                <input asp-for="Cores" class="form-control" />
+                <span asp-validation-for="Cores" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Threads" class="control-label"></label>
+                <input asp-for="Threads" class="form-control" />
+                <span asp-validation-for="Threads" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="BaseFrequency" class="control-label"></label>
+                <input asp-for="BaseFrequency" class="form-control" />
+                <span asp-validation-for="BaseFrequency" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="LaunchDate" class="control-label"></label>
+                <input asp-for="LaunchDate" class="form-control" />
+                <span asp-validation-for="LaunchDate" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="FabricanteId" class="control-label"></label>
+                <select asp-for="FabricanteId" class="form-control" asp-items="ViewBag.Fabricantes"></select>
+                <span asp-validation-for="FabricanteId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
