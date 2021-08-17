@@ -1,71 +1,96 @@
-﻿@model IEnumerable<Domain.Model.Models.ProcessadorModel>
+﻿@using System.Linq
+@model ProcessadorIndexViewModel
 
 @{
     ViewData["Title"] = "Index";
 }
 
-<h1>Index</h1>
+<h1>
+    <h1>Search</h1>
+    <form asp-action="Index">
+        <label>Busca:</label>
+        <input type="text" asp-for="@Model.Search" />
+        <br />
+        <label>Ordenação por Nome:</label>
+        <select asp-for="OrderAscendant">
+            <option value="@true">Ascendente</option>
+            <option value="@false">Descendente</option>
+        </select>
+        <br />
+        <button>go!</button>
+    </form>
+</h1>
 
 <p>
     <a asp-action="Create">Create New</a>
 </p>
+
+@{
+    if (Model.Processadores == null || !Model.Processadores.Any())
+    {
+        <p>Nenhum processador cadastrado!</p>
+        return;
+    }
+}
+
 <table class="table">
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.NomeProcessador)
+                @Html.DisplayNameFor(model => model.Processadores.First().NomeProcessador)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.ItemDescription)
+                @Html.DisplayNameFor(model => model.Processadores.First().ItemDescription)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Cores)
+                @Html.DisplayNameFor(model => model.Processadores.First().Cores)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Threads)
+                @Html.DisplayNameFor(model => model.Processadores.First().Threads)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.BaseFrequency)
+                @Html.DisplayNameFor(model => model.Processadores.First().BaseFrequency)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.LaunchDate)
+                @Html.DisplayNameFor(model => model.Processadores.First().LaunchDate)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.FabricanteId)
+                @Html.DisplayNameFor(model => model.Processadores.First().FabricanteId)
             </th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.NomeProcessador)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ItemDescription)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Cores)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Threads)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.BaseFrequency)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.LaunchDate)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.FabricanteId)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
-}
+        @foreach (var item in Model.Processadores)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.NomeProcessador)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ItemDescription)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Cores)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Threads)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.BaseFrequency)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.LaunchDate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.FabricanteId)
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>

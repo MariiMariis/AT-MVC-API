@@ -8,9 +8,11 @@ using Microsoft.EntityFrameworkCore;
 using Domain.Model.Models;
 using Data.Data;
 using Domain.Model.Interfaces.Services;
+using Presentation.Models;
 
 namespace Presentation.Controllers
 {
+
     public class FabricanteController : Controller
     {
         private readonly IFabricanteService _fabricanteService;
@@ -23,9 +25,18 @@ namespace Presentation.Controllers
         }
 
         // GET: Fabricante
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(FabricanteIndexViewModel fabricanteIndexRequest)
         {
-            return View(await _fabricanteService.GetAllAsync(true));
+            var fabricanteIndexViewModel = new FabricanteIndexViewModel
+                                               {
+                                                   Search = fabricanteIndexRequest.Search,
+                                                   OrderAscendant = fabricanteIndexRequest.OrderAscendant,
+                                                   Fabricantes = await _fabricanteService.GetAllAsync(
+                                                                 fabricanteIndexRequest.OrderAscendant,
+                                                                 fabricanteIndexRequest.Search)
+                                               };
+            
+            return View(fabricanteIndexViewModel);
         }
 
         // GET: Fabricante/Details/5
@@ -43,7 +54,9 @@ namespace Presentation.Controllers
                 return NotFound();
             }
 
-            return View(fabricanteModel);
+            var fabricanteViewModel = FabricanteViewModel.From(fabricanteModel);
+
+            return View(fabricanteViewModel);
         }
 
         // GET: Fabricante/Create
@@ -57,14 +70,16 @@ namespace Presentation.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,NomeFabricante,Fundador,PaisOrigem,DataFundacao")] FabricanteModel fabricanteModel)
+        public async Task<IActionResult> Create(FabricanteViewModel fabricanteViewModel)
         {
             if (!ModelState.IsValid)
             {
-                return View(fabricanteModel);
+                return View(fabricanteViewModel);
             }
 
+            var fabricanteModel = fabricanteViewModel.ToModel();
             var fabricanteCreated = await _fabricanteService.CreateAsync(fabricanteModel);
+
             return RedirectToAction(nameof(Details), new { id = fabricanteCreated.Id});
         }
 
@@ -81,7 +96,10 @@ namespace Presentation.Controllers
             {
                 return NotFound();
             }
-            return View(fabricanteModel);
+            
+            var fabricanteViewModel = FabricanteViewModel.From(fabricanteModel);
+
+            return View(fabricanteViewModel);
         }
 
         // POST: Fabricante/Edit/5
@@ -89,34 +107,36 @@ namespace Presentation.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,NomeFabricante,Fundador,PaisOrigem,DataFundacao")] FabricanteModel fabricanteModel)
+        public async Task<IActionResult> Edit(int id, FabricanteViewModel fabricanteViewModel)
         {
-            if (id != fabricanteModel.Id)
+            if (id != fabricanteViewModel.Id)
             {
                 return NotFound();
             }
 
             if (ModelState.IsValid)
             {
-                try
-                {
-                    await _fabricanteService.EditAsync(fabricanteModel);
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    var exists = await FabricanteModelExistsAsync(fabricanteModel.Id);
-                    if (!exists)
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
+                return View(fabricanteViewModel);
             }
-            return View(fabricanteModel);
+
+            var fabricanteModel = fabricanteViewModel.ToModel();
+            try
+            {
+                await _fabricanteService.EditAsync(fabricanteModel);
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                var exists = await FabricanteModelExistsAsync(fabricanteModel.Id);
+                if (!exists)
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+            return RedirectToAction(nameof(Index));
         }
 
         // GET: Fabricante/Delete/5
@@ -133,7 +153,8 @@ namespace Presentation.Controllers
                 return NotFound();
             }
 
-            return View(fabricanteModel);
+            var fabricanteViewModel = FabricanteViewModel.From(fabricanteModel);
+            return View(fabricanteViewModel);
         }
 
         // POST: Fabricante/Delete/5

@@ -1,14 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Data.Data;
+﻿using System.Threading.Tasks;
 using Domain.Model.Interfaces.Services;
 using Domain.Model.Models;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
+using Presentation.Models;
+
 
 namespace Presentation.Controllers
 {
@@ -27,13 +24,25 @@ namespace Presentation.Controllers
         }
 
         // GET: Processador
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(
+            ProcessadorIndexViewModel processadorIndexRequest)
         {
-            return View(await _processadorService.GetAllAsync(true));
+            var processadorIndexViewModel = new ProcessadorIndexViewModel
+            {
+                Search = processadorIndexRequest.Search,
+                OrderAscendant = processadorIndexRequest.OrderAscendant,
+                Processadores = await _processadorService.GetAllAsync(
+                                    processadorIndexRequest.OrderAscendant,
+                                    processadorIndexRequest.Search)
+                                   
+            };
+
+            return View(processadorIndexViewModel);
+
         }
 
         // GET: Processador/Details/5
-        public async Task<IActionResult> Details(int? id == null)
+        public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
             {
@@ -47,14 +56,15 @@ namespace Presentation.Controllers
                 return NotFound();
             }
 
-            return View(processadorModel);
+            var processadorViewModel = ProcessadorViewModel.From(processadorModel);
+            return View(processadorViewModel);
         }
 
         // GET: Processador/Create
         public async Task<IActionResult> Create()
         {
             await PreencherSelectFabricantes();
-            
+
             return View();
         }
 
@@ -63,15 +73,16 @@ namespace Presentation.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,NomeFabricante,Fundador,PaisOrigem,DataFundacao")] ProcessadorModel processadorModel)
+        public async Task<IActionResult> Create(ProcessadorViewModel processadorViewModel)
         {
             if (!ModelState.IsValid)
             {
-                PreencherSelectFabricantes(processadorModel.FabricanteId);
+                await PreencherSelectFabricantes(processadorViewModel.FabricanteId);
 
-                return View(processadorModel);
+                return View(processadorViewModel);
             }
 
+            var processadorModel = processadorViewModel.ToModel();
             var processadorCreated = await _processadorService.CreateAsync(processadorModel);
 
             return RedirectToAction(nameof(Details), new { id = processadorCreated.Id });
@@ -104,7 +115,8 @@ namespace Presentation.Controllers
 
             await PreencherSelectFabricantes(processadorModel.FabricanteId);
 
-            return View(processadorModel);
+            var processadorViewModel = ProcessadorViewModel.From(processadorModel);
+            return View(processadorViewModel);
         }
 
         // POST: Processador/Edit/5
@@ -112,20 +124,21 @@ namespace Presentation.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,NomeFabricante,Fundador,PaisOrigem,DataFundacao")] ProcessadorModel processadorModel)
+        public async Task<IActionResult> Edit(int id, ProcessadorViewModel processadorViewModel)
         {
-            if (id != processadorModel.Id)
+            if (id != processadorViewModel.Id)
             {
                 return NotFound();
             }
 
             if (!ModelState.IsValid)
             {
-                await PreencherSelectFabricantes(processadorModel.FabricanteId);
+                await PreencherSelectFabricantes(processadorViewModel.FabricanteId);
 
-                return View(processadorModel);
+                return View(processadorViewModel);
             }
-            
+
+            var processadorModel = processadorViewModel.ToModel();
             try
             {
                 await _processadorService.EditAsync(processadorModel);
@@ -142,7 +155,8 @@ namespace Presentation.Controllers
                     throw;
                 }
             }
-            return this.RedirectToAction(nameof(this.Index));
+
+            return this.RedirectToAction(nameof(Index));
         }
 
         // GET: Processador/Delete/5
@@ -159,7 +173,8 @@ namespace Presentation.Controllers
                 return NotFound();
             }
 
-            return View(processadorModel);
+            var processadorViewModel = ProcessadorViewModel.From(processadorModel);
+            return View(processadorViewModel);
         }
 
         // POST: Processador/Delete/5
@@ -179,6 +194,14 @@ namespace Presentation.Controllers
             var any = processador != null;
 
             return any;
+        }
+
+        [AcceptVerbs("GET", "POST")]
+        public async Task<IActionResult> IsItemDescriptionValid(string itemDescription, int id)
+        {
+            return await _processadorService.IsItemDescriptionValidAsync(itemDescription, id)
+                       ? Json(true)
+                       : Json($"A descrição {itemDescription} já está sendo utilizada.");
         }
     }
 }

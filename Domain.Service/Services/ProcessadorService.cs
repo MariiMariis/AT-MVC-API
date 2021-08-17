@@ -43,5 +43,12 @@ namespace Domain.Service.Services
         {
             await _processadorRepository.DeleteAsync(id);
         }
+
+        public async Task<bool> IsItemDescriptionValidAsync(string itemDescription, int id)
+        {
+            var processadorModel = await _processadorRepository.GetItemDescriptionNotFromThisIdAsync(itemDescription, id);
+
+            return processadorModel == null;
+        }
     }
 }

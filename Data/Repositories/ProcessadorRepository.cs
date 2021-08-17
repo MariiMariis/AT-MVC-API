@@ -73,5 +73,14 @@ namespace Data.Repositories
 
             await _fabricantesContext.SaveChangesAsync();
         }
+
+        public async Task<ProcessadorModel> GetItemDescriptionNotFromThisIdAsync(string itemDescription, int id)
+        {
+            var processadorModel = await _fabricantesContext
+                                       .Processadores
+                                       .FirstOrDefaultAsync(x => x.ItemDescription == itemDescription && x.Id != id);
+
+            return processadorModel;
+        }
     }
 }

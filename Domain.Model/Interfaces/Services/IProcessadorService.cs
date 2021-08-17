@@ -17,5 +17,7 @@ namespace Domain.Model.Interfaces.Services
         Task<ProcessadorModel> CreateAsync(ProcessadorModel processadorModel);
         Task<ProcessadorModel> EditAsync(ProcessadorModel processadorModel);
         Task DeleteAsync(int id);
+
+        Task<bool> IsItemDescriptionValidAsync(string itemDescription, int id);
     }
 }
