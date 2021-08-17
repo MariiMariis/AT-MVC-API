@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using Domain.Model.Models;
-using Data.Data;
 using Domain.Model.Interfaces.Services;
 using Presentation.Models;
 
@@ -28,14 +22,15 @@ namespace Presentation.Controllers
         public async Task<IActionResult> Index(FabricanteIndexViewModel fabricanteIndexRequest)
         {
             var fabricanteIndexViewModel = new FabricanteIndexViewModel
-                                               {
-                                                   Search = fabricanteIndexRequest.Search,
-                                                   OrderAscendant = fabricanteIndexRequest.OrderAscendant,
-                                                   Fabricantes = await _fabricanteService.GetAllAsync(
-                                                                 fabricanteIndexRequest.OrderAscendant,
-                                                                 fabricanteIndexRequest.Search)
-                                               };
-            
+            {
+                Search = fabricanteIndexRequest.Search,
+                OrderAscendant = fabricanteIndexRequest.OrderAscendant,
+                Fabricantes = await _fabricanteService.GetAllAsync(
+                                  fabricanteIndexRequest.OrderAscendant,
+                                  fabricanteIndexRequest.Search)
+            };
+
+
             return View(fabricanteIndexViewModel);
         }
 
