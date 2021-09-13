@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Data.Migrations
 {
     [DbContext(typeof(FabricantesContext))]
-    [Migration("20210812184431_Initial")]
-    partial class Initial
+    [Migration("20210913195723_AddInitial2")]
+    partial class AddInitial2
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -58,7 +58,7 @@ namespace Data.Migrations
                     b.Property<int>("Cores")
                         .HasColumnType("int");
 
-                    b.Property<int>("FabricanteId")
+                    b.Property<int>("FabricanteModelId")
                         .HasColumnType("int");
 
                     b.Property<string>("ItemDescription")
@@ -66,9 +66,6 @@ namespace Data.Migrations
 
                     b.Property<DateTime>("LaunchDate")
                         .HasColumnType("datetime2");
-
-                    b.Property<int?>("NomeFabricanteId")
-                        .HasColumnType("int");
 
                     b.Property<string>("NomeProcessador")
                         .HasColumnType("nvarchar(max)");
@@ -78,18 +75,20 @@ namespace Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("NomeFabricanteId");
+                    b.HasIndex("FabricanteModelId");
 
                     b.ToTable("Processadores");
                 });
 
             modelBuilder.Entity("Domain.Model.Models.ProcessadorModel", b =>
                 {
-                    b.HasOne("Domain.Model.Models.FabricanteModel", "NomeFabricante")
+                    b.HasOne("Domain.Model.Models.FabricanteModel", "Fabricante")
                         .WithMany("Processadores")
-                        .HasForeignKey("NomeFabricanteId");
+                        .HasForeignKey("FabricanteModelId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                    b.Navigation("NomeFabricante");
+                    b.Navigation("Fabricante");
                 });
 
             modelBuilder.Entity("Domain.Model.Models.FabricanteModel", b =>

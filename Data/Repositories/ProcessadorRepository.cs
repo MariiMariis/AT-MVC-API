@@ -1,11 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
+using Data.Data;
 using Domain.Model.Interfaces.Repositories;
 using Domain.Model.Models;
-using global::Data.Data;
 using Microsoft.EntityFrameworkCore;
 
 namespace Data.Repositories
@@ -40,7 +38,7 @@ namespace Data.Repositories
         {
             var processadores = await _fabricantesContext
                                     .Processadores
-                                    .Include(x => x.NomeFabricante)
+                                    .Include(x => x.Fabricante)
                                     .FirstOrDefaultAsync(x => x.Id == id);
 
             return processadores;

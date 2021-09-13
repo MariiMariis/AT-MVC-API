@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Data.Migrations
 {
-    public partial class Initial : Migration
+    public partial class AddInitial : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -35,24 +35,23 @@ namespace Data.Migrations
                     Threads = table.Column<int>(type: "int", nullable: false),
                     BaseFrequency = table.Column<float>(type: "real", nullable: false),
                     LaunchDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    NomeFabricanteId = table.Column<int>(type: "int", nullable: true),
-                    FabricanteId = table.Column<int>(type: "int", nullable: false)
+                    FabricanteModelId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Processadores", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Processadores_Fabricantes_NomeFabricanteId",
-                        column: x => x.NomeFabricanteId,
+                        name: "FK_Processadores_Fabricantes_FabricanteModelId",
+                        column: x => x.FabricanteModelId,
                         principalTable: "Fabricantes",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Processadores_NomeFabricanteId",
+                name: "IX_Processadores_FabricanteModelId",
                 table: "Processadores",
-                column: "NomeFabricanteId");
+                column: "FabricanteModelId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)

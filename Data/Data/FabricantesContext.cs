@@ -13,7 +13,9 @@ namespace Data.Data
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder
-                .LogTo(Console.WriteLine);
+                .LogTo(Console.WriteLine)
+                .EnableSensitiveDataLogging()
+                .EnableDetailedErrors();
 
             base.OnConfiguring(optionsBuilder);
         }

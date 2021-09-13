@@ -1,8 +1,8 @@
-﻿@using System.Linq
-@model ProcessadorIndexViewModel
+﻿@model ProcessadorIndexViewModel
 
 @{
     ViewData["Title"] = "Index";
+
 }
 
 <h1>
@@ -17,7 +17,7 @@
             <option value="@false">Descendente</option>
         </select>
         <br />
-        <button>go!</button>
+        <button class="btn btn-primary">go!</button>
     </form>
 </h1>
 
@@ -55,7 +55,7 @@
                 @Html.DisplayNameFor(model => model.Processadores.First().LaunchDate)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Processadores.First().FabricanteId)
+                @Html.DisplayNameFor(model => model.Processadores.First().Fabricante)
             </th>
             <th></th>
         </tr>
@@ -83,8 +83,9 @@
                     @Html.DisplayFor(modelItem => item.LaunchDate)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.FabricanteId)
+                    @Html.DisplayFor(modelItem => item.FabricanteModelId)
                 </td>
+
                 <td>
                     <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
                     <a asp-action="Details" asp-route-id="@item.Id">Details</a> |

@@ -3,26 +3,34 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using Domain.Model.Models;
+using System.ComponentModel;
 
 namespace Presentation.Models
 {
+    using System.ComponentModel;
+
     public class FabricanteViewModel
     {
         public int Id { get; set; }
 
         [Required]
+        [DisplayName("Nome do Fabricante")]
         [StringLength(150)]
         public string NomeFabricante { get; set; }
 
+        [DisplayName("Fundador")]
         [Required]
         [StringLength(150)]
         public string Fundador { get; set; }
 
         [Required]
+        [DisplayName("Pais de Origem")]
         [StringLength(150)]
         public string PaisOrigem { get; set; }
 
         [Required]
+        [DisplayName("Data de Fundação")]
+        [DataType(DataType.Date)]
         public DateTime DataFundacao { get; set; }
 
         public List<ProcessadorViewModel> Processadores { get; set; }

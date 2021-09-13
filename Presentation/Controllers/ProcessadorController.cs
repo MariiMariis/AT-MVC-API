@@ -113,7 +113,7 @@ namespace Presentation.Controllers
                 return NotFound();
             }
 
-            await PreencherSelectFabricantes(processadorModel.FabricanteId);
+            await PreencherSelectFabricantes(processadorModel.FabricanteModelId);
 
             var processadorViewModel = ProcessadorViewModel.From(processadorModel);
             return View(processadorViewModel);

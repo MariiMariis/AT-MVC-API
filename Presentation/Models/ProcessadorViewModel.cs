@@ -2,17 +2,23 @@
 using System.ComponentModel.DataAnnotations;
 using Domain.Model.Models;
 using Microsoft.AspNetCore.Mvc;
+using System.ComponentModel;
 
 namespace Presentation.Models
 {
+    
+
     public class ProcessadorViewModel
     {
         public int Id { get; set; }
 
+        [Required]
+        [DisplayName("Nome do Processador")]
         [StringLength(150)]
         public string NomeProcessador { get; set; }
 
-        [StringLength(maximumLength: 100, MinimumLength = 1)]
+        [DisplayName("Descrição")]
+        [StringLength(maximumLength: 50, MinimumLength = 1)]
         [Remote(action: "IsItemDescriptionValid", controller: "Processador", AdditionalFields = "Id")]
         public string ItemDescription { get; set; }
 
@@ -22,26 +28,27 @@ namespace Presentation.Models
         [Range(1, 100)]
         public int Threads { get; set; }
 
+        [DisplayName("Frequência de Base")]
         [Range(1, 100)]
         [DataType(DataType.Currency)]
         public float BaseFrequency { get; set; }
 
+        [DisplayName("Data de Lançamento")]
         [DataType(DataType.Date)]
-        [DisplayFormat(DataFormatString = "{dd-MM-yyyy}", ApplyFormatInEditMode = true)]
         public DateTime LaunchDate { get; set; }
 
+        [DisplayName("Id do Fabricante")]
         [Required]
         public int FabricanteId { get; set; }
 
-        public FabricanteViewModel NomeFabricante { get; set; }
+        public FabricanteViewModel Fabricante { get; set; }
 
 
         public static ProcessadorViewModel From(ProcessadorModel processadorModel, bool firstMap = true)
         {
             var nomeFabricante = firstMap 
-                 ? FabricanteViewModel.From(processadorModel.NomeFabricante)
+                 ? FabricanteViewModel.From(processadorModel.Fabricante)
                  : null;
-
 
 
             var processadorViewModel = new ProcessadorViewModel
@@ -53,9 +60,9 @@ namespace Presentation.Models
                 Threads = processadorModel.Threads,
                 BaseFrequency = processadorModel.BaseFrequency,
                 LaunchDate = processadorModel.LaunchDate,
-                FabricanteId = processadorModel.FabricanteId,
+                FabricanteId = processadorModel.FabricanteModelId,
 
-                NomeFabricante = nomeFabricante,
+                Fabricante = nomeFabricante,
             };
 
 
@@ -65,7 +72,7 @@ namespace Presentation.Models
         public ProcessadorModel ToModel(bool firstMap = true)
         {
             var nomeFabricante = firstMap
-                  ? NomeFabricante?.ToModel()
+                  ? this.Fabricante?.ToModel()
                   : null;
 
 
@@ -78,9 +85,9 @@ namespace Presentation.Models
                 Threads = Threads,
                 BaseFrequency = BaseFrequency,
                 LaunchDate = LaunchDate,
-                FabricanteId = FabricanteId,
+                FabricanteModelId = FabricanteId,
 
-                NomeFabricante = nomeFabricante,
+                Fabricante = nomeFabricante,
             };
 
 
