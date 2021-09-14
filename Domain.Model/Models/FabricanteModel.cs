@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 
 namespace Domain.Model.Models
 {
     
+
     public class FabricanteModel
     {
         public int Id { get; set; }
@@ -19,6 +21,7 @@ namespace Domain.Model.Models
         public string PaisOrigem { get; set; }
 
         [DisplayName("Data de fundação")]
+        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
         public DateTime DataFundacao { get; set; }
 
         public List<ProcessadorModel> Processadores { get; set; }

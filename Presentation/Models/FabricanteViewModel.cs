@@ -18,8 +18,8 @@ namespace Presentation.Models
         [StringLength(150)]
         public string NomeFabricante { get; set; }
 
-        [DisplayName("Fundador")]
         [Required]
+        [DisplayName("Fundador")]
         [StringLength(150)]
         public string Fundador { get; set; }
 
@@ -31,6 +31,7 @@ namespace Presentation.Models
         [Required]
         [DisplayName("Data de Fundação")]
         [DataType(DataType.Date)]
+        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
         public DateTime DataFundacao { get; set; }
 
         public List<ProcessadorViewModel> Processadores { get; set; }
@@ -45,7 +46,7 @@ namespace Presentation.Models
                 PaisOrigem = fabricanteModel.PaisOrigem,
                 DataFundacao = fabricanteModel.DataFundacao,
 
-                Processadores = fabricanteModel?.Processadores.Select(x => ProcessadorViewModel.From(x, false)).ToList(),
+                Processadores = fabricanteModel.Processadores?.Select(x => ProcessadorViewModel.From(x, false)).ToList(),
             };
 
 

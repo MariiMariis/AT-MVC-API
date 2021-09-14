@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 
 namespace Domain.Model.Models
 {
@@ -22,6 +23,7 @@ namespace Domain.Model.Models
         public float BaseFrequency { get; set; }
 
         [DisplayName("Data de Lançamento")]
+        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
         public DateTime LaunchDate { get; set; }
 
         public int FabricanteModelId { get; set; }
