@@ -3,10 +3,13 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Domain.Model.Interfaces.Services;
 using Presentation.Models;
+using Microsoft.AspNetCore.Authorization;
+
 
 namespace Presentation.Controllers
 {
-
+    
+    [Authorize]
     public class FabricanteController : Controller
     {
         private readonly IFabricanteService _fabricanteService;

@@ -5,10 +5,13 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Presentation.Models;
+using Microsoft.AspNetCore.Authorization;
 
 
 namespace Presentation.Controllers
 {
+    
+    [Authorize]
     public class ProcessadorController : Controller
     {
         private readonly IProcessadorService _processadorService;
