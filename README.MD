@@ -8,3 +8,8 @@ Executados na pasta do projeto Data:
 dotnet ef migrations add Initial --startup-project ..\Presentation\Presentation.csproj
 dotnet ef database update  --startup-project ..\Presentation\Presentation.csproj
 ```
+
+#Migrations com Identity
+```powershell
+dotnet ef migrations add Initial --context LoginContext --output-dir Areas\Identity\Data\Migrations
+```

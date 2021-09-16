@@ -7,7 +7,8 @@ using Crosscutting.IoC;
 
 namespace Presentation
 {
-    
+    using Microsoft.AspNetCore.Routing;
+
     public class Startup
     {
         public Startup(IConfiguration configuration)
@@ -31,6 +32,7 @@ namespace Presentation
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+                app.UseMigrationsEndPoint();
             }
             else
             {
@@ -43,13 +45,16 @@ namespace Presentation
 
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
+            
 
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");
+                endpoints.MapRazorPages();
             });
         }
     }
