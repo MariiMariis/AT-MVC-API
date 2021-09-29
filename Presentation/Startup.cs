@@ -3,11 +3,13 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Crosscutting.IoC;
+using Presentation.Services;
+using Presentation.Services.Implementations;
+using System;
 
 namespace Presentation
 {
-    using Microsoft.AspNetCore.Routing;
+    
 
     public class Startup
     {
@@ -23,7 +25,13 @@ namespace Presentation
         {
             services.AddControllersWithViews();
 
-            services.RegisterServices(Configuration);
+            var fabricanteAddress = Configuration.GetValue<string>("ApiAddresses:FabricanteModel");
+            var processadorAddress = Configuration.GetValue<string>("ApiAddresses:ProcessadorModel");
+
+            services.AddHttpClient<IFabricanteHttpService, FabricanteHttpService>(x =>
+                x.BaseAddress = new Uri(fabricanteAddress));
+            services.AddHttpClient<IProcessadorHttpService, ProcessadorHttpService>(x =>
+                x.BaseAddress = new Uri(processadorAddress));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

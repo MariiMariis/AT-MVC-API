@@ -14,5 +14,7 @@ namespace Domain.Model.Interfaces.Repositories
         Task <FabricanteModel> CreateAsync(FabricanteModel fabricanteModel);
         Task <FabricanteModel> EditAsync(FabricanteModel fabricanteModel);
         Task DeleteAsync(int id);
+
+        Task<FabricanteModel> GetNameAsync(string nomeFabricante, int id);
     }
 }

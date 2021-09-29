@@ -2,12 +2,12 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
-using Domain.Model.Models;
 using System.ComponentModel;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Presentation.Models
 {
-    using System.ComponentModel;
+    
 
     public class FabricanteViewModel
     {
@@ -15,6 +15,7 @@ namespace Presentation.Models
 
         [Required]
         [DisplayName("Nome do Fabricante")]
+        [Remote(action: "IsNameValid", controller: "FabricanteController", AdditionalFields = "Id")]
         [StringLength(150)]
         public string NomeFabricante { get; set; }
 
@@ -34,39 +35,7 @@ namespace Presentation.Models
         [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
         public DateTime DataFundacao { get; set; }
 
-        public List<ProcessadorViewModel> Processadores { get; set; }
+        public ProcessadorViewModel Processadores { get; set; }
 
-        public static FabricanteViewModel From(FabricanteModel fabricanteModel)
-        {
-            var fabricanteViewModel = new FabricanteViewModel
-            {
-                Id = fabricanteModel.Id,
-                NomeFabricante = fabricanteModel.NomeFabricante,
-                Fundador = fabricanteModel.Fundador,
-                PaisOrigem = fabricanteModel.PaisOrigem,
-                DataFundacao = fabricanteModel.DataFundacao,
-
-                Processadores = fabricanteModel.Processadores?.Select(x => ProcessadorViewModel.From(x, false)).ToList(),
-            };
-
-
-            return fabricanteViewModel;
-        }
-
-        public FabricanteModel ToModel()
-        {
-            var fabricanteModel = new FabricanteModel
-            {
-                Id = Id,
-                NomeFabricante = NomeFabricante,
-                Fundador = Fundador,
-                PaisOrigem = PaisOrigem,
-                DataFundacao = DataFundacao,
-
-                Processadores = Processadores?.Select(x => x.ToModel(false)).ToList(),
-            };
-
-            return fabricanteModel;
-        }
     }
 }

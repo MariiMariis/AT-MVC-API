@@ -1,24 +1,23 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Domain.Model.Interfaces.Services;
 using Presentation.Models;
 using Microsoft.AspNetCore.Authorization;
+using Presentation.Services;
 
 
 namespace Presentation.Controllers
 {
-    
+
     [Authorize]
     public class FabricanteController : Controller
     {
-        private readonly IFabricanteService _fabricanteService;
+        private readonly IFabricanteHttpService _fabricanteHttpService;
 
-        public FabricanteController(
-            IFabricanteService fabricanteService)
+        public FabricanteController(IFabricanteHttpService fabricanteHttpService)
 
         {
-            _fabricanteService = fabricanteService;
+            _fabricanteHttpService= fabricanteHttpService;
         }
 
         // GET: Fabricante
@@ -28,7 +27,7 @@ namespace Presentation.Controllers
             {
                 Search = fabricanteIndexRequest.Search,
                 OrderAscendant = fabricanteIndexRequest.OrderAscendant,
-                Fabricantes = await _fabricanteService.GetAllAsync(
+                Fabricantes = await _fabricanteHttpService.GetAllAsync(
                                   fabricanteIndexRequest.OrderAscendant,
                                   fabricanteIndexRequest.Search)
             };
@@ -45,14 +44,13 @@ namespace Presentation.Controllers
                 return NotFound();
             }
 
-            var fabricanteModel = await _fabricanteService.GetByIdAsync(id.Value);
+            var fabricanteViewModel = await _fabricanteHttpService.GetByIdAsync(id.Value);
 
-            if (fabricanteModel == null)
+            if (fabricanteViewModel == null)
             {
                 return NotFound();
             }
 
-            var fabricanteViewModel = FabricanteViewModel.From(fabricanteModel);
 
             return View(fabricanteViewModel);
         }
@@ -62,10 +60,7 @@ namespace Presentation.Controllers
         {
             return View();
         }
-
-        // POST: Fabricante/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        // POST: User/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(FabricanteViewModel fabricanteViewModel)
@@ -75,8 +70,8 @@ namespace Presentation.Controllers
                 return View(fabricanteViewModel);
             }
 
-            var fabricanteModel = fabricanteViewModel.ToModel();
-            var fabricanteCreated = await _fabricanteService.CreateAsync(fabricanteModel);
+           
+            var fabricanteCreated = await _fabricanteHttpService.CreateAsync(fabricanteViewModel);
 
             return RedirectToAction(nameof(Details), new { id = fabricanteCreated.Id});
         }
@@ -89,20 +84,17 @@ namespace Presentation.Controllers
                 return NotFound();
             }
 
-            var fabricanteModel = await _fabricanteService.GetByIdAsync(id.Value);
-            if (fabricanteModel == null)
+            var fabricanteViewModel = await _fabricanteHttpService.GetByIdAsync(id.Value);
+            if (fabricanteViewModel == null)
             {
                 return NotFound();
             }
-            
-            var fabricanteViewModel = FabricanteViewModel.From(fabricanteModel);
 
             return View(fabricanteViewModel);
         }
 
         // POST: Fabricante/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, FabricanteViewModel fabricanteViewModel)
@@ -117,14 +109,13 @@ namespace Presentation.Controllers
                 return View(fabricanteViewModel);
             }
 
-            var fabricanteModel = fabricanteViewModel.ToModel();
             try
             {
-                await _fabricanteService.EditAsync(fabricanteModel);
+                await _fabricanteHttpService.EditAsync(fabricanteViewModel);
             }
             catch (DbUpdateConcurrencyException)
             {
-                var exists = await FabricanteModelExistsAsync(fabricanteModel.Id);
+                var exists = await FabricanteModelExistsAsync(fabricanteViewModel.Id);
                 if (!exists)
                 {
                     return NotFound();
@@ -145,13 +136,12 @@ namespace Presentation.Controllers
                 return NotFound();
             }
 
-            var fabricanteModel = await _fabricanteService.GetByIdAsync(id.Value);
-            if (fabricanteModel == null)
+            var fabricanteViewModel = await _fabricanteHttpService.GetByIdAsync(id.Value);
+            if (fabricanteViewModel == null)
             {
                 return NotFound();
             }
 
-            var fabricanteViewModel = FabricanteViewModel.From(fabricanteModel);
             return View(fabricanteViewModel);
         }
 
@@ -160,18 +150,27 @@ namespace Presentation.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         { 
-            await _fabricanteService.DeleteAsync(id);
+            await _fabricanteHttpService.DeleteAsync(id);
 
             return RedirectToAction(nameof(Index));
         }
 
         private async Task<bool> FabricanteModelExistsAsync(int id)
         {
-            var fabricante = await _fabricanteService.GetByIdAsync(id);
+            var fabricante = await _fabricanteHttpService.GetByIdAsync(id);
 
             var any = fabricante != null;
 
             return any;
         }
+
+        [AcceptVerbs("GET", "POST")]
+        public async Task<IActionResult> IsNameValid(string NomeFabricante, int id)
+        {
+            return await this._fabricanteHttpService.IsNameValidAsync(NomeFabricante, id)
+                       ? Json(true)
+                       : Json($"O nome {NomeFabricante} já está sendo utilizado.");
+        }
     }
+
 }

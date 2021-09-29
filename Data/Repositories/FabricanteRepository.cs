@@ -20,18 +20,20 @@ namespace Data.Repositories
 
         public async Task<IEnumerable<FabricanteModel>> GetAllAsync(bool orderAscendant, string search = null)
         {
-            var fabricantes = orderAscendant
-                                  ? _fabricantesContext.Fabricantes.OrderBy(x => x.NomeFabricante)
-                                  : _fabricantesContext.Fabricantes.OrderByDescending(x => x.NomeFabricante);
+            var fabricantes = _fabricantesContext.Fabricantes.AsQueryable();
 
             if (string.IsNullOrWhiteSpace(search))
             {
-                return await fabricantes.ToListAsync();
+                fabricantes = fabricantes
+                    .Where(x => x.NomeFabricante.Contains(search));
             }
 
-            return await fabricantes
-                       .Where(x => x.NomeFabricante.Contains(search))
-                       .ToListAsync();
+            fabricantes = orderAscendant
+                        ? fabricantes.OrderBy(x => x.NomeFabricante)
+                        : fabricantes.OrderByDescending(x => x.NomeFabricante);
+
+            return fabricantes;
+
         }
 
         public async Task<FabricanteModel> GetByIdAsync(int id)
@@ -70,6 +72,16 @@ namespace Data.Repositories
             _fabricantesContext.Fabricantes.Remove(fabricante);
 
             await _fabricantesContext.SaveChangesAsync();
+        }
+
+        public async Task<FabricanteModel> GetNameAsync(string nomeFabricante, int id)
+        {
+            var fabricanteModel = await _fabricantesContext
+                                .Fabricantes
+                                .FirstOrDefaultAsync(x => x.NomeFabricante == nomeFabricante && x.Id != id);
+
+            return fabricanteModel;
+
         }
     }
 }

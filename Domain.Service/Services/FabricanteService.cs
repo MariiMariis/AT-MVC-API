@@ -40,5 +40,17 @@ namespace Domain.Service.Services
         {
             await _fabricanteRepository.DeleteAsync(id);
         }
+
+        public async Task<bool> IsNameValidAsync(string nomeFabricante, int id)
+        {
+            if (string.IsNullOrWhiteSpace(nomeFabricante))
+            {
+                return false;
+            }
+
+            var fabricanteModel = await _fabricanteRepository.GetNameAsync(nomeFabricante, id);
+
+            return fabricanteModel == null;
+        }
     }
 }

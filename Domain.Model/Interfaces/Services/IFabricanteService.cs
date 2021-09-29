@@ -15,6 +15,6 @@ namespace Domain.Model.Interfaces.Services
         Task<FabricanteModel> CreateAsync(FabricanteModel fabricanteModel);
         Task<FabricanteModel> EditAsync(FabricanteModel fabricanteModel);
         Task DeleteAsync(int id);
-        
+        Task<bool> IsNameValidAsync(string NomeFabricante, int id);
     }
 }

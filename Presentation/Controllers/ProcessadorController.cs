@@ -1,12 +1,10 @@
 ﻿using System.Threading.Tasks;
-using Domain.Model.Interfaces.Services;
-using Domain.Model.Models;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Presentation.Models;
 using Microsoft.AspNetCore.Authorization;
-
+using Microsoft.AspNetCore.Mvc;
+using Presentation.Services;
 
 namespace Presentation.Controllers
 {
@@ -14,16 +12,16 @@ namespace Presentation.Controllers
     [Authorize]
     public class ProcessadorController : Controller
     {
-        private readonly IProcessadorService _processadorService;
-        private readonly IFabricanteService _fabricanteService;
+        private readonly IProcessadorHttpService _processadorHttpService;
+        private readonly IFabricanteHttpService _fabricanteHttpService;
 
         public ProcessadorController(
-            IProcessadorService processadorService,
-            IFabricanteService fabricanteService)
+            IProcessadorHttpService processadorHttpService,
+            IFabricanteHttpService fabricanteHttpService)
 
         {
-            _processadorService = processadorService;
-            _fabricanteService = fabricanteService;
+            _processadorHttpService = processadorHttpService;
+            _fabricanteHttpService = fabricanteHttpService;
         }
 
         // GET: Processador
@@ -34,7 +32,7 @@ namespace Presentation.Controllers
             {
                 Search = processadorIndexRequest.Search,
                 OrderAscendant = processadorIndexRequest.OrderAscendant,
-                Processadores = await _processadorService.GetAllAsync(
+                Processadores = await _processadorHttpService.GetAllAsync(
                                     processadorIndexRequest.OrderAscendant,
                                     processadorIndexRequest.Search)
                                    
@@ -52,14 +50,13 @@ namespace Presentation.Controllers
                 return NotFound();
             }
 
-            var processadorModel = await _processadorService.GetByIdAsync(id.Value);
+            var processadorViewModel = await _processadorHttpService.GetByIdAsync(id.Value);
 
-            if (processadorModel == null)
+            if (processadorViewModel == null)
             {
                 return NotFound();
             }
 
-            var processadorViewModel = ProcessadorViewModel.From(processadorModel);
             return View(processadorViewModel);
         }
 
@@ -85,20 +82,19 @@ namespace Presentation.Controllers
                 return View(processadorViewModel);
             }
 
-            var processadorModel = processadorViewModel.ToModel();
-            var processadorCreated = await _processadorService.CreateAsync(processadorModel);
+            var processadorCreated = await _processadorHttpService.CreateAsync(processadorViewModel);
 
             return RedirectToAction(nameof(Details), new { id = processadorCreated.Id });
         }
 
         private async Task PreencherSelectFabricantes(int? fabricanteId = null)
         {
-            var fabricantes = await _fabricanteService.GetAllAsync(true);
+            var fabricantes = await _fabricanteHttpService.GetAllAsync(true);
 
             ViewBag.Fabricantes = new SelectList(
                 fabricantes,
-                nameof(FabricanteModel.Id),
-                nameof(FabricanteModel.NomeFabricante),
+                nameof(FabricanteViewModel.Id),
+                nameof(FabricanteViewModel.NomeFabricante),
                 fabricanteId);
         }
 
@@ -110,15 +106,15 @@ namespace Presentation.Controllers
                 return NotFound();
             }
 
-            var processadorModel = await _processadorService.GetByIdAsync(id.Value);
-            if (processadorModel == null)
+            var processadorViewModel = await _processadorHttpService.GetByIdAsync(id.Value);
+            if (processadorViewModel == null)
             {
                 return NotFound();
             }
 
-            await PreencherSelectFabricantes(processadorModel.FabricanteModelId);
+            await PreencherSelectFabricantes(processadorViewModel.FabricanteId);
 
-            var processadorViewModel = ProcessadorViewModel.From(processadorModel);
+            
             return View(processadorViewModel);
         }
 
@@ -141,14 +137,13 @@ namespace Presentation.Controllers
                 return View(processadorViewModel);
             }
 
-            var processadorModel = processadorViewModel.ToModel();
             try
             {
-                await _processadorService.EditAsync(processadorModel);
+                await _processadorHttpService.EditAsync(processadorViewModel);
             }
             catch (DbUpdateConcurrencyException)
             {
-                var exists = await this.ProcessadorModelExistsAsync(processadorModel.Id);
+                var exists = await this.ProcessadorModelExistsAsync(processadorViewModel.Id);
                 if (!exists)
                 {
                     return this.NotFound();
@@ -170,13 +165,12 @@ namespace Presentation.Controllers
                 return NotFound();
             }
 
-            var processadorModel = await _processadorService.GetByIdAsync(id.Value);
-            if (processadorModel == null)
+            var processadorViewModel = await _processadorHttpService.GetByIdAsync(id.Value);
+            if (processadorViewModel == null)
             {
                 return NotFound();
             }
 
-            var processadorViewModel = ProcessadorViewModel.From(processadorModel);
             return View(processadorViewModel);
         }
 
@@ -185,14 +179,14 @@ namespace Presentation.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            await _processadorService.DeleteAsync(id);
+            await _processadorHttpService.DeleteAsync(id);
 
             return RedirectToAction(nameof(Index));
         }
 
         private async Task<bool> ProcessadorModelExistsAsync(int id)
         {
-            var processador = await _processadorService.GetByIdAsync(id);
+            var processador = await _processadorHttpService.GetByIdAsync(id);
 
             var any = processador != null;
 
@@ -202,7 +196,7 @@ namespace Presentation.Controllers
         [AcceptVerbs("GET", "POST")]
         public async Task<IActionResult> IsItemDescriptionValid(string itemDescription, int id)
         {
-            return await _processadorService.IsItemDescriptionValidAsync(itemDescription, id)
+            return await _processadorHttpService.IsItemDescriptionValidAsync(itemDescription, id)
                        ? Json(true)
                        : Json($"A descrição {itemDescription} já está sendo utilizada.");
         }

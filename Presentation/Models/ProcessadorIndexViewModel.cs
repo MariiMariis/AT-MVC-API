@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using Domain.Model.Models;
 
 namespace Presentation.Models
 {
@@ -8,7 +7,7 @@ namespace Presentation.Models
 
         public string Search { get; set; }
         public bool OrderAscendant { get; set; }
-        public IEnumerable<ProcessadorModel> Processadores { get; set; }
+        public IEnumerable<ProcessadorViewModel> Processadores { get; set; }
 
     }
 }

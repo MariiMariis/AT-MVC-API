@@ -26,10 +26,13 @@ namespace Data.Repositories
 
             if (string.IsNullOrWhiteSpace(search))
             {
-                return await processadores.ToListAsync();
+                return await processadores
+                           .Include(x => x.Fabricante)
+                           .ToListAsync();
             }
 
             return await processadores
+                       .Include(x=>x.Fabricante)
                        .Where(x => x.NomeProcessador.Contains(search))
                        .ToListAsync();
         }
