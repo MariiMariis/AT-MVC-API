@@ -35,7 +35,7 @@ namespace Presentation.Models
         [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
         public DateTime DataFundacao { get; set; }
 
-        public ProcessadorViewModel Processadores { get; set; }
+        public List<ProcessadorViewModel> Processadores { get; set; }
 
     }
 }
