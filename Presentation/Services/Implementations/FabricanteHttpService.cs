@@ -8,13 +8,13 @@ using System.Text.Json;
 
 namespace Presentation.Services.Implementations
 {
-    using System.Net.Http.Json;
+    using System.Runtime.Intrinsics;
 
     public class FabricanteHttpService : IFabricanteHttpService
     {
         private readonly HttpClient _httpClient;
 
-        private static readonly JsonSerializerOptions JsonSerializerOptions = new()
+        private static JsonSerializerOptions _jsonSerializerOptions = new JsonSerializerOptions()
                                                                                   {
                                                                                       IgnoreNullValues = true,
                                                                                       PropertyNameCaseInsensitive = true
@@ -22,50 +22,52 @@ namespace Presentation.Services.Implementations
         public FabricanteHttpService(
             HttpClient httpClient)
         {
-            _httpClient = httpClient;
+            _httpClient = new HttpClient();
+            this._httpClient.BaseAddress = new Uri("https://localhost:44348/");
         }
-
+    
         public async Task<FabricanteViewModel> CreateAsync(FabricanteViewModel fabricanteViewModel)
         {
             var httpResponseMessage = await _httpClient
-                                          .PostAsJsonAsync(string.Empty, fabricanteViewModel);
+                                          .PostAsJsonAsync("api/v1/FabricanteApi", fabricanteViewModel);
 
-            await using var contentStream = await httpResponseMessage.Content.ReadAsStreamAsync();
+            var contentStream = await httpResponseMessage.Content.ReadAsStreamAsync();
 
             var fabricanteCreated = await JsonSerializer
-                                        .DeserializeAsync<FabricanteViewModel>(contentStream, JsonSerializerOptions);
+                                        .DeserializeAsync<FabricanteViewModel>(contentStream, _jsonSerializerOptions);
 
             return fabricanteCreated;
         }
 
         public async Task<IEnumerable<FabricanteViewModel>> GetAllAsync(bool orderAscendant, string search = null)
         {
-            var users = await _httpClient
-                            .GetFromJsonAsync<IEnumerable<FabricanteViewModel>>($"{orderAscendant}/{search}");
+            
+            var fabricantes = await _httpClient
+                            .GetFromJsonAsync<IEnumerable<FabricanteViewModel>>($"/api/v1/FabricanteApi");
 
-            return users;
+            return fabricantes;
         }
 
         public async Task<FabricanteViewModel> GetByIdAsync(int id)
         {
-            var users = await _httpClient
-                            .GetFromJsonAsync<FabricanteViewModel>($"{id}");
+            var fabricantes = await _httpClient
+                            .GetFromJsonAsync<FabricanteViewModel>($"/api/v1/FabricanteApi/{id}");
 
-            return users;
+            return fabricantes;
         }
 
 
         public async Task<FabricanteViewModel> EditAsync(FabricanteViewModel fabricanteViewModel)
         {
             var httpResponseMessage = await _httpClient
-                                          .PutAsJsonAsync($"{fabricanteViewModel.Id}", fabricanteViewModel);
+                                          .PutAsJsonAsync($"api/v1/FabricanteApi/{fabricanteViewModel.Id}", fabricanteViewModel);
 
             httpResponseMessage.EnsureSuccessStatusCode();
 
-            await using var contentStream = await httpResponseMessage.Content.ReadAsStreamAsync();
+            var contentStream = await httpResponseMessage.Content.ReadAsStreamAsync();
 
             var fabricanteEdited = await JsonSerializer
-                                 .DeserializeAsync<FabricanteViewModel>(contentStream, JsonSerializerOptions);
+                                 .DeserializeAsync<FabricanteViewModel>(contentStream, _jsonSerializerOptions);
 
             return fabricanteEdited;
         }

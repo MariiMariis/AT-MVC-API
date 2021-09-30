@@ -11,25 +11,23 @@ namespace Processadores.WebApi.Controllers
     
     [ApiController] 
     [Route("api/v1/[controller]")]
-
     public class FabricanteApiController : ControllerBase
     {
         private readonly IFabricanteService _fabricanteService;
 
         public FabricanteApiController(IFabricanteService fabricanteService)
         {
-            this._fabricanteService = fabricanteService;
+            _fabricanteService = fabricanteService;
         }
 
         [HttpGet("{orderAscendant" + ":bool/{search?}")]
-
         public async Task<ActionResult<IEnumerable<FabricanteModel>>> Get
             (bool orderAscendant,
              string search = null)
         {
             var fabricantes = await this._fabricanteService.GetAllAsync(orderAscendant, search);
 
-            return this.Ok(fabricantes);
+            return Ok(fabricantes);
         }
 
         [HttpGet("{id:int}")]

@@ -8,6 +8,7 @@ using Presentation.Services;
 
 namespace Presentation.Controllers
 {
+    using System;
 
     [Authorize]
     public class FabricanteController : Controller
@@ -23,17 +24,18 @@ namespace Presentation.Controllers
         // GET: Fabricante
         public async Task<IActionResult> Index(FabricanteIndexViewModel fabricanteIndexRequest)
         {
+            
             var fabricanteIndexViewModel = new FabricanteIndexViewModel
-            {
-                Search = fabricanteIndexRequest.Search,
-                OrderAscendant = fabricanteIndexRequest.OrderAscendant,
-                Fabricantes = await _fabricanteHttpService.GetAllAsync(
-                                  fabricanteIndexRequest.OrderAscendant,
-                                  fabricanteIndexRequest.Search)
-            };
-
+                                               {
+                                                   Search = fabricanteIndexRequest.Search,
+                                                   OrderAscendant = fabricanteIndexRequest.OrderAscendant,
+                                                   Fabricantes = await _fabricanteHttpService.GetAllAsync(
+                                                                     fabricanteIndexRequest.OrderAscendant,
+                                                                     fabricanteIndexRequest.Search)
+                                               };
 
             return View(fabricanteIndexViewModel);
+            
         }
 
         // GET: Fabricante/Details/5

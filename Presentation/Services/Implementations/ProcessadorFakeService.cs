@@ -97,7 +97,7 @@ namespace Presentation.Services.Implementations
             return null;
         }
 
-        public Task DeleteAsync(int id)
+        public async Task DeleteAsync(int id)
         {
             ProcessadorViewModel processadorViewModel = null;
             foreach (var processador in Processadores)
@@ -114,7 +114,7 @@ namespace Presentation.Services.Implementations
             }
         }
 
-        public Task<bool> IsItemDescriptionValidAsync(string itemDescription, int id)
+        public async Task<bool> IsItemDescriptionValidAsync(string itemDescription, int id)
         {
             throw new NotImplementedException();
         }

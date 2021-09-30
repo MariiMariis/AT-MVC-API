@@ -5,11 +5,10 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Domain.Model.Interfaces.Services;
+using Microsoft.EntityFrameworkCore;
 
 namespace Processadores.WebApi.Controllers
 {
-    using Microsoft.EntityFrameworkCore;
-
     [ApiController]
     [Route("api/v1/[controller]")]
     public class ProcessadorApiController : ControllerBase
