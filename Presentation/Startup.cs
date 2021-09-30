@@ -22,16 +22,16 @@ namespace Presentation
         {
             services.AddControllersWithViews();
 
-            var fabricanteAddress = Configuration.GetValue<string>("ApiAddresses:FabricanteModel");
-            var processadorAddress = Configuration.GetValue<string>("ApiAddresses:ProcessadorModel");
+            //var fabricanteAddress = Configuration.GetValue<string>("ApiAddresses:FabricanteModel");
+            //var processadorAddress = Configuration.GetValue<string>("ApiAddresses:ProcessadorModel");
 
-            services.AddHttpClient<IFabricanteHttpService, FabricanteFakeService>(x =>
-                x.BaseAddress = new Uri(fabricanteAddress));
-            services.AddHttpClient<IProcessadorHttpService, ProcessadorFakeService>(x =>
-                x.BaseAddress = new Uri(processadorAddress));
+            //services.AddHttpClient<IFabricanteHttpService, FabricanteFakeService>(x =>
+                //x.BaseAddress = new Uri(fabricanteAddress));
+            //services.AddHttpClient<IProcessadorHttpService, ProcessadorFakeService>(x =>
+                //x.BaseAddress = new Uri(processadorAddress));
 
-                //services.AddTransient<IFabricanteHttpService, FabricanteHttpService>();
-                //services.AddTransient<IProcessadorHttpService, ProcessadorHttpService>();
+                services.AddTransient<IFabricanteHttpService, FabricanteHttpService>();
+                services.AddTransient<IProcessadorHttpService, ProcessadorHttpService>();
 
         }
 

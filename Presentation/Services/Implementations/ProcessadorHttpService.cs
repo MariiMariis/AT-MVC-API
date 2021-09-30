@@ -21,17 +21,17 @@ namespace Presentation.Services.Implementations
                                                                                       PropertyNameCaseInsensitive = true
                                                                                   };
 
-        public ProcessadorHttpService(
-            HttpClient httpClient)
+        public ProcessadorHttpService()
         {
-            _httpClient = httpClient;
+            _httpClient = new HttpClient();
+            this._httpClient.BaseAddress = new Uri("https://localhost:44348/");
         }
 
 
         public async Task<IEnumerable<ProcessadorViewModel>> GetAllAsync(bool orderAscendant, string search = null)
         {
             var processadores = await _httpClient
-                                .GetFromJsonAsync<IEnumerable<ProcessadorViewModel>>($"{orderAscendant}/{search}");
+                                .GetFromJsonAsync<IEnumerable<ProcessadorViewModel>>($"/api/v1/ProcessadorApi/");
 
             return processadores;
         }
@@ -39,7 +39,7 @@ namespace Presentation.Services.Implementations
         public async Task<ProcessadorViewModel> GetByIdAsync(int id)
         {
             var processadores = await _httpClient
-                                    .GetFromJsonAsync<ProcessadorViewModel>($"{id}");
+                                    .GetFromJsonAsync<ProcessadorViewModel>($"/api/v1/ProcessadorApi/{id}");
 
             return processadores;
         }
@@ -47,9 +47,9 @@ namespace Presentation.Services.Implementations
         public async Task<ProcessadorViewModel> CreateAsync(ProcessadorViewModel processadorViewModel)
         {
             var httpResponseMessage = await _httpClient
-                                          .PostAsJsonAsync(string.Empty, processadorViewModel);
+                                          .PostAsJsonAsync("api/v1/ProcessadorApi", processadorViewModel);
 
-            await using var contentStream = await httpResponseMessage.Content.ReadAsStreamAsync();
+            var contentStream = await httpResponseMessage.Content.ReadAsStreamAsync();
 
             var processadorCreate = await JsonSerializer
                                       .DeserializeAsync<ProcessadorViewModel>(contentStream, JsonSerializerOptions);
@@ -59,11 +59,11 @@ namespace Presentation.Services.Implementations
         public async Task<ProcessadorViewModel> EditAsync(ProcessadorViewModel processadorViewModel)
         {
             var httpResponseMessage = await _httpClient
-                                          .PutAsJsonAsync($"{processadorViewModel.Id}", processadorViewModel);
+                                          .PutAsJsonAsync($"api/v1/ProcessadorApi/{processadorViewModel.Id}", processadorViewModel);
 
             httpResponseMessage.EnsureSuccessStatusCode();
 
-            await using var contentStream = await httpResponseMessage.Content.ReadAsStreamAsync();
+            var contentStream = await httpResponseMessage.Content.ReadAsStreamAsync();
 
             var processadorEdited = await JsonSerializer
                                      .DeserializeAsync<ProcessadorViewModel>(contentStream, JsonSerializerOptions);
@@ -74,7 +74,7 @@ namespace Presentation.Services.Implementations
         public async Task DeleteAsync(int id)
         {
             var httpResponseMessage = await _httpClient
-                                          .DeleteAsync($"{id}");
+                                          .DeleteAsync($"api/v1/ProcessadorApi/{id}");
 
             httpResponseMessage.EnsureSuccessStatusCode();
         }
@@ -82,7 +82,7 @@ namespace Presentation.Services.Implementations
         public async Task<bool> IsItemDescriptionValidAsync(string itemDescription, int id)
         {
             var isItemDescriptionValid = await _httpClient
-                                     .GetFromJsonAsync<bool>($"IsItemDescriptionValid/{itemDescription}/{id}");
+                                     .GetFromJsonAsync<bool>($"api/v1/ProcessadorApi/IsItemDescriptionValid/{itemDescription}/{id}");
 
             return isItemDescriptionValid;
         }

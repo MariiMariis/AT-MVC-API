@@ -14,13 +14,12 @@ namespace Presentation.Services.Implementations
     {
         private readonly HttpClient _httpClient;
 
-        private static JsonSerializerOptions _jsonSerializerOptions = new JsonSerializerOptions()
-                                                                                  {
-                                                                                      IgnoreNullValues = true,
-                                                                                      PropertyNameCaseInsensitive = true
-                                                                                  };
-        public FabricanteHttpService(
-            HttpClient httpClient)
+        private static JsonSerializerOptions _jsonSerializerOptions = new()
+                                                                          {
+                                                                              IgnoreNullValues = true,
+                                                                              PropertyNameCaseInsensitive = true
+                                                                          };
+        public FabricanteHttpService()
         {
             _httpClient = new HttpClient();
             this._httpClient.BaseAddress = new Uri("https://localhost:44348/");
@@ -43,7 +42,7 @@ namespace Presentation.Services.Implementations
         {
             
             var fabricantes = await _httpClient
-                            .GetFromJsonAsync<IEnumerable<FabricanteViewModel>>($"/api/v1/FabricanteApi");
+                            .GetFromJsonAsync<IEnumerable<FabricanteViewModel>>($"/api/v1/FabricanteApi/");
 
             return fabricantes;
         }
@@ -75,7 +74,7 @@ namespace Presentation.Services.Implementations
         public async Task DeleteAsync(int id)
         {
             var httpResponseMessage = await _httpClient
-                                          .DeleteAsync($"{id}");
+                                          .DeleteAsync($"api/v1/FabricanteApi/{id}");
 
             httpResponseMessage.EnsureSuccessStatusCode();
         }

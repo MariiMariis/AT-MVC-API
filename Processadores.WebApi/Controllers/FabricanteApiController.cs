@@ -15,7 +15,8 @@ namespace Processadores.WebApi.Controllers
     {
         private readonly IFabricanteService _fabricanteService;
 
-        public FabricanteApiController(IFabricanteService fabricanteService)
+        public FabricanteApiController(
+            IFabricanteService fabricanteService)
         {
             _fabricanteService = fabricanteService;
         }
