@@ -21,17 +21,16 @@ namespace Presentation.Services.Implementations
                                                                                       PropertyNameCaseInsensitive = true
                                                                                   };
 
-        public ProcessadorHttpService()
+        public ProcessadorHttpService(HttpClient httpClient)
         {
-            _httpClient = new HttpClient();
-            this._httpClient.BaseAddress = new Uri("https://localhost:44348/");
+            _httpClient = httpClient;
         }
 
 
         public async Task<IEnumerable<ProcessadorViewModel>> GetAllAsync(bool orderAscendant, string search = null)
         {
             var processadores = await _httpClient
-                                .GetFromJsonAsync<IEnumerable<ProcessadorViewModel>>($"/api/v1/ProcessadorApi/");
+                                .GetFromJsonAsync<IEnumerable<ProcessadorViewModel>>($"{orderAscendant}/{search}");
 
             return processadores;
         }
@@ -39,7 +38,7 @@ namespace Presentation.Services.Implementations
         public async Task<ProcessadorViewModel> GetByIdAsync(int id)
         {
             var processadores = await _httpClient
-                                    .GetFromJsonAsync<ProcessadorViewModel>($"/api/v1/ProcessadorApi/{id}");
+                                    .GetFromJsonAsync<ProcessadorViewModel>($"{id}");
 
             return processadores;
         }
@@ -47,9 +46,9 @@ namespace Presentation.Services.Implementations
         public async Task<ProcessadorViewModel> CreateAsync(ProcessadorViewModel processadorViewModel)
         {
             var httpResponseMessage = await _httpClient
-                                          .PostAsJsonAsync("api/v1/ProcessadorApi", processadorViewModel);
+                                          .PostAsJsonAsync(string.Empty, processadorViewModel);
 
-            var contentStream = await httpResponseMessage.Content.ReadAsStreamAsync();
+            await using var contentStream = await httpResponseMessage.Content.ReadAsStreamAsync();
 
             var processadorCreate = await JsonSerializer
                                       .DeserializeAsync<ProcessadorViewModel>(contentStream, JsonSerializerOptions);
@@ -59,7 +58,7 @@ namespace Presentation.Services.Implementations
         public async Task<ProcessadorViewModel> EditAsync(ProcessadorViewModel processadorViewModel)
         {
             var httpResponseMessage = await _httpClient
-                                          .PutAsJsonAsync($"api/v1/ProcessadorApi/{processadorViewModel.Id}", processadorViewModel);
+                                          .PutAsJsonAsync($"{processadorViewModel.Id}", processadorViewModel);
 
             httpResponseMessage.EnsureSuccessStatusCode();
 
@@ -74,7 +73,7 @@ namespace Presentation.Services.Implementations
         public async Task DeleteAsync(int id)
         {
             var httpResponseMessage = await _httpClient
-                                          .DeleteAsync($"api/v1/ProcessadorApi/{id}");
+                                          .DeleteAsync($"{id}");
 
             httpResponseMessage.EnsureSuccessStatusCode();
         }
@@ -82,7 +81,7 @@ namespace Presentation.Services.Implementations
         public async Task<bool> IsItemDescriptionValidAsync(string itemDescription, int id)
         {
             var isItemDescriptionValid = await _httpClient
-                                     .GetFromJsonAsync<bool>($"api/v1/ProcessadorApi/IsItemDescriptionValid/{itemDescription}/{id}");
+                                     .GetFromJsonAsync<bool>($"IsItemDescriptionValid/{itemDescription}/{id}");
 
             return isItemDescriptionValid;
         }

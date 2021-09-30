@@ -17,21 +17,17 @@ namespace Presentation
         }
         public IConfiguration Configuration { get; }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews();
 
-            //var fabricanteAddress = Configuration.GetValue<string>("ApiAddresses:FabricanteModel");
-            //var processadorAddress = Configuration.GetValue<string>("ApiAddresses:ProcessadorModel");
+            var fabricanteAddress = Configuration.GetValue<string>("ApiAddresses:Fabricante");
+            var processadorAddress = Configuration.GetValue<string>("ApiAddresses:Processador");
 
-            //services.AddHttpClient<IFabricanteHttpService, FabricanteFakeService>(x =>
-                //x.BaseAddress = new Uri(fabricanteAddress));
-            //services.AddHttpClient<IProcessadorHttpService, ProcessadorFakeService>(x =>
-                //x.BaseAddress = new Uri(processadorAddress));
-
-                services.AddTransient<IFabricanteHttpService, FabricanteHttpService>();
-                services.AddTransient<IProcessadorHttpService, ProcessadorHttpService>();
+            services.AddHttpClient<IFabricanteHttpService, FabricanteHttpService>(x =>
+                x.BaseAddress = new Uri(fabricanteAddress));
+            services.AddHttpClient<IProcessadorHttpService, ProcessadorHttpService>(x =>
+                x.BaseAddress = new Uri(processadorAddress));
 
         }
 
@@ -57,7 +53,6 @@ namespace Presentation
             app.UseAuthentication();
             app.UseAuthorization();
             
-
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(

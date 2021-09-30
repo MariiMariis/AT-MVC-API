@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Domain.Model.Interfaces.Services;
 using Domain.Model.Models;
 using Microsoft.EntityFrameworkCore;
+using Domain.Model.Interfaces.UoW;
 
 namespace Processadores.WebApi.Controllers
 {
@@ -14,14 +15,16 @@ namespace Processadores.WebApi.Controllers
     public class FabricanteApiController : ControllerBase
     {
         private readonly IFabricanteService _fabricanteService;
+       
 
         public FabricanteApiController(
             IFabricanteService fabricanteService)
         {
             _fabricanteService = fabricanteService;
+           
         }
 
-        [HttpGet("{orderAscendant" + ":bool/{search?}")]
+        [HttpGet("{orderAscendant:bool}/{search?}")]
         public async Task<ActionResult<IEnumerable<FabricanteModel>>> Get
             (bool orderAscendant,
              string search = null)
@@ -58,6 +61,7 @@ namespace Processadores.WebApi.Controllers
             }
 
             var fabricanteCreated = await _fabricanteService.CreateAsync(fabricanteModel);
+            
 
             return Ok(fabricanteCreated);
         }
@@ -78,7 +82,7 @@ namespace Processadores.WebApi.Controllers
             try
             {
                 var userEdited = await _fabricanteService.EditAsync(fabricanteModel);
-
+                
                 return Ok(userEdited);
             }
             catch (DbUpdateConcurrencyException)
@@ -97,7 +101,7 @@ namespace Processadores.WebApi.Controllers
             }
 
             await _fabricanteService.DeleteAsync(id);
-
+            
             return Ok();
         }
 

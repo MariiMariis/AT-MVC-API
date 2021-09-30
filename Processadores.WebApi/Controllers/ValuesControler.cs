@@ -5,7 +5,7 @@ namespace Processadores.WebApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ValueControler : ControllerBase
+    public class ValuesControler : ControllerBase
     {
         // GET: api/<ValuesController>
         [HttpGet]

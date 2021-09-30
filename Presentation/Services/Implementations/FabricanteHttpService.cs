@@ -5,11 +5,11 @@ using System.Net.Http;
 using System.Net.Http.Json;
 using Presentation.Models;
 using System.Text.Json;
+using System.Runtime.Intrinsics;
 
 namespace Presentation.Services.Implementations
 {
-    using System.Runtime.Intrinsics;
-
+    
     public class FabricanteHttpService : IFabricanteHttpService
     {
         private readonly HttpClient _httpClient;
@@ -19,18 +19,17 @@ namespace Presentation.Services.Implementations
                                                                               IgnoreNullValues = true,
                                                                               PropertyNameCaseInsensitive = true
                                                                           };
-        public FabricanteHttpService()
+        public FabricanteHttpService(HttpClient httpClient)
         {
-            _httpClient = new HttpClient();
-            this._httpClient.BaseAddress = new Uri("https://localhost:44348/");
+            _httpClient = httpClient;
         }
     
         public async Task<FabricanteViewModel> CreateAsync(FabricanteViewModel fabricanteViewModel)
         {
             var httpResponseMessage = await _httpClient
-                                          .PostAsJsonAsync("api/v1/FabricanteApi", fabricanteViewModel);
+                                          .PostAsJsonAsync(string.Empty, fabricanteViewModel);
 
-            var contentStream = await httpResponseMessage.Content.ReadAsStreamAsync();
+            await using var contentStream = await httpResponseMessage.Content.ReadAsStreamAsync();
 
             var fabricanteCreated = await JsonSerializer
                                         .DeserializeAsync<FabricanteViewModel>(contentStream, _jsonSerializerOptions);
@@ -42,7 +41,7 @@ namespace Presentation.Services.Implementations
         {
             
             var fabricantes = await _httpClient
-                            .GetFromJsonAsync<IEnumerable<FabricanteViewModel>>($"/api/v1/FabricanteApi/");
+                            .GetFromJsonAsync<IEnumerable<FabricanteViewModel>>($"{orderAscendant}/{search}");
 
             return fabricantes;
         }
@@ -50,7 +49,7 @@ namespace Presentation.Services.Implementations
         public async Task<FabricanteViewModel> GetByIdAsync(int id)
         {
             var fabricantes = await _httpClient
-                            .GetFromJsonAsync<FabricanteViewModel>($"/api/v1/FabricanteApi/{id}");
+                            .GetFromJsonAsync<FabricanteViewModel>($"{id}");
 
             return fabricantes;
         }
@@ -59,11 +58,11 @@ namespace Presentation.Services.Implementations
         public async Task<FabricanteViewModel> EditAsync(FabricanteViewModel fabricanteViewModel)
         {
             var httpResponseMessage = await _httpClient
-                                          .PutAsJsonAsync($"api/v1/FabricanteApi/{fabricanteViewModel.Id}", fabricanteViewModel);
+                                          .PutAsJsonAsync($"{fabricanteViewModel.Id}", fabricanteViewModel);
 
             httpResponseMessage.EnsureSuccessStatusCode();
 
-            var contentStream = await httpResponseMessage.Content.ReadAsStreamAsync();
+            await using var contentStream = await httpResponseMessage.Content.ReadAsStreamAsync();
 
             var fabricanteEdited = await JsonSerializer
                                  .DeserializeAsync<FabricanteViewModel>(contentStream, _jsonSerializerOptions);
@@ -74,7 +73,7 @@ namespace Presentation.Services.Implementations
         public async Task DeleteAsync(int id)
         {
             var httpResponseMessage = await _httpClient
-                                          .DeleteAsync($"api/v1/FabricanteApi/{id}");
+                                          .DeleteAsync($"{id}");
 
             httpResponseMessage.EnsureSuccessStatusCode();
         }
@@ -82,7 +81,7 @@ namespace Presentation.Services.Implementations
         public async Task<bool> IsNameValidAsync(string NomeFabricante, int id)
         {
             var IsNameValid = await _httpClient
-                                  .GetFromJsonAsync<bool>($"IsNameValid/{NomeFabricante}/{id}");
+                                  .GetFromJsonAsync<bool>($"{NomeFabricante}/{id}");
 
             return IsNameValid;
         }

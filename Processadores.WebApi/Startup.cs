@@ -43,8 +43,6 @@ namespace Processadores.WebApi
                 app.UseDeveloperExceptionPage();
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Processadores.WebApi v1"));
-
-
             }
 
             app.UseHttpsRedirection();

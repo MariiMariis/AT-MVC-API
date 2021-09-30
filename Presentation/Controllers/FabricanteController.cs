@@ -8,7 +8,6 @@ using Presentation.Services;
 
 namespace Presentation.Controllers
 {
-    using System;
 
     [Authorize]
     public class FabricanteController : Controller
@@ -72,7 +71,6 @@ namespace Presentation.Controllers
                 return View(fabricanteViewModel);
             }
 
-           
             var fabricanteCreated = await _fabricanteHttpService.CreateAsync(fabricanteViewModel);
 
             return RedirectToAction(nameof(Details), new { id = fabricanteCreated.Id});

@@ -154,7 +154,7 @@ namespace Presentation.Controllers
                 }
             }
 
-            return this.RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(Index));
         }
 
         // GET: Processador/Delete/5
