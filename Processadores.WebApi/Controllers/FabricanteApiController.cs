@@ -1,11 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Domain.Model.Interfaces.Services;
 using Domain.Model.Models;
 using Microsoft.EntityFrameworkCore;
-using Domain.Model.Interfaces.UoW;
 
 namespace Processadores.WebApi.Controllers
 {
